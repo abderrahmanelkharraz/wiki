@@ -1,3 +1,4 @@
+// Execute when the DOM content is fully loaded
 window.addEventListener('DOMContentLoaded', () => {
   let scrollPos = 0;
   const mainNav = document.getElementById('mainNav');
@@ -23,13 +24,18 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 })
 
-const loginform = document.getElementById("loginForm");
+// Handle login_form submission for login
+const loginform = document.getElementById("login_Form");
 
 if (loginform) {
   loginform.addEventListener("submit", function (event) {
+    // Prevent the default form submission
     event.preventDefault();
+
+    // Create a FormData object with the form data
     const formData = new FormData(this);
 
+    // Send a POST request to the server
     fetch("index.php?page=login", {
       method: "POST",
       body: formData,
@@ -37,36 +43,84 @@ if (loginform) {
       .then((response) => response.text())
       .then((data) => {
         if (data.trim() === 'Login successful') {
-          console.log('Login successful');
+          // If login is successful, display success message
           alertComponent(data.trim());
+          // Redirect to the home page after a delay
           setTimeout(() => {
             window.location.href = "index.php?page=home";
-          }, 9000);
+          }, 1000);
         } else {
-          console.log('Login not successful');
-          // Handle other cases (invalid email, email not registered, invalid password)
+          // If login is not successful, display an error message
           alertComponent(data.trim());
         }
       })
       .catch((error) => {
+        // Handle errors from the fetch request
         console.error('Error:', error);
         // Handle errors here
       });
   });
 }
 
+
+// Handle form submission for login
+const registerform = document.getElementById("register_Form");
+
+if (registerform) {
+  registerform.addEventListener("submit", function (event) {
+    // Prevent the default form submission
+    event.preventDefault();
+
+    // Create a FormData object with the form data
+    const formData = new FormData(this);
+
+    // Send a POST request to the server
+    fetch("index.php?page=register", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        if (data.trim() === 'Registration successful') {
+          // If register is successful, display success message
+          alertComponent(data.trim());
+          // Redirect to the home page after a delay
+
+          setTimeout(() => {
+            window.location.href = "index.php?page=login";
+          }, 1000);
+        } else {
+          // If login is not successful, display an error message
+          alertComponent(data.trim());
+        }
+      })
+      .catch((error) => {
+        // Handle errors from the fetch request
+        console.error('Error:', error);
+        // Handle errors here
+      });
+  });
+}
+
+// Display a message using SweetAlert
 function alertComponent(type) {
-  console.log(type);
   switch (type) {
     case 'Login successful':
       Swal.fire({
         title: "Good job!",
-        text: "Login successful !",
+        text: "Login successful!",
+        icon: "success"
+      });
+      break;
+    case 'Registration successful':
+      Swal.fire({
+        title: "Good job!",
+        text: "Login successful!",
         icon: "success"
       });
       break;
     default:
-      // Handle unexpected cases
+      // If login is not successful, display an error message
       Swal.fire({
         icon: "error",
         title: "Oops...",
